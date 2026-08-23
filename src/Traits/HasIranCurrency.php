@@ -14,6 +14,17 @@ trait HasIranCurrency
      */
     protected function normalizeByCurrency(int|float $price): int|float
     {
-        return $price * IranCurrency::RATIO[$this->settings->currency];
+        return $price * $this->getCurrencyRatio();
+    }
+
+    protected function getCurrencyRatio():int
+    {
+        /** @var IranCurrency $currency */
+        $currency = $this->settings->currency;
+        if (!($currency instanceof \BackedEnum)) {
+            $currency = $currency === 'T' ? IranCurrency::TOMAN : IranCurrency::RIAL;
+        }
+
+        return $currency->ratio();
     }
 }
